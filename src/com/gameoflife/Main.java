@@ -2,12 +2,6 @@ package com.gameoflife;
 
 import java.awt.Color;
 
-import com.gameoflife.controller.GameController;
-import com.gameoflife.controller.GameControllerImpl;
-import com.gameoflife.model.Cell;
-import com.gameoflife.model.GameBoard;
-import com.gameoflife.view.GameView;
-
 public class Main {
 
 	private static final int BOARD_HIGHT = 15;

@@ -4,17 +4,18 @@ import java.awt.Color;
 
 public class GameBoard {
 
-	private int hight;
-	private int width;
-	private int timeInterval;
-	private Color color;
-	private String boardName;
+	private int hight;			//Number of cells in Y axis
+	private int width;			//Number of cells in X axis
+	private int timeInterval;	//Time intervals between patterns on the game board
+	private Color color;		//Color of the game board in GUI
+	private String boardName;	//Name of the GUI
 	
 	public GameBoard(int hight, int width, int timeInterval, Color color) {
 		super();
 		this.hight = hight;
 		this.width = width;
 		this.timeInterval = timeInterval;
+		this.color = color;
 	}
 	
 	public int getHight() {

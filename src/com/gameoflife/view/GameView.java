@@ -20,6 +20,7 @@ public class GameView extends JPanel {
 	private GameController gameController;
 	private Timer timer;
 	private JButton pauseButton;
+	private BoardPanel boardPanel;
 	
 	public GameView(GameBoard gameBoard, Cell cell, GameController gameController) {
 		this.gameBoard = gameBoard;
@@ -29,13 +30,11 @@ public class GameView extends JPanel {
 
 	public void createPanel() {
 		JFrame mainFrame = new JFrame();
-		//mainFrame.setTitle("");
-		//mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		        
 		JPanel mainPanel = new JPanel(new GridLayout());
-		BoardPanel boardPanel = new BoardPanel(gameBoard, cell);
+		boardPanel = new BoardPanel(gameBoard, cell);
 		JPanel controlPanel = new JPanel(new GridLayout());
 		pauseButton = new JButton("Pause");
+		
 		pauseButton.addActionListener(new ButtonActionListener());
 		controlPanel.add(pauseButton);
 		mainPanel.add(boardPanel);
@@ -47,7 +46,9 @@ public class GameView extends JPanel {
 		mainFrame.pack();
 		mainFrame.setVisible(true);
 		
+		//Next pattern timer
 		timer = new Timer(gameBoard.getTimeInterval(), new TimerActionListener());
+		timer.setRepeats(true);
 		timer.start();
 	}
 	
@@ -55,16 +56,20 @@ public class GameView extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			gameController.updateCells(gameBoard, cell);	
+			//create next generation
+			gameController.updateCells(gameBoard, cell);
+			//update the game board
+			boardPanel.repaint();
 		}
 		
-	}
+	} 
 	
 	class ButtonActionListener implements ActionListener {
-
+	
 		@Override
-		public void actionPerformed(ActionEvent e) {
-			timer.stop();
+		public void actionPerformed(ActionEvent e) {	
+			//If the pressed button label is pause stop the timer otherwise start it
+			//Toggle the button text 
 			if(pauseButton.getText().equals("Pause")) {
 				timer.stop();
 				pauseButton.setText("Continue");

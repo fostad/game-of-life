@@ -4,9 +4,9 @@ import java.awt.Color;
 
 public class Cell {
 	
-	private int size;
-	private Color color;
-	private boolean[][] cells;
+	private int size; 			//size of a one cell in game board
+	private Color color; 		//color of the alive cell
+	private boolean[][] cells;  //current pattern of the board
 	
 	public Cell(int size, Color color, int Width, int hight) {
 		this.size = size;
@@ -35,7 +35,7 @@ public class Cell {
 		this.cells = cells;
 	}
 	
-	public boolean getCell(int column, int row) {
+	public boolean cellIsAlive(int column, int row) {
 		return cells[column][row];
 	}
 

@@ -3,8 +3,9 @@ package com.gameoflife.controller;
 import com.gameoflife.model.Cell;
 import com.gameoflife.model.GameBoard;
 
-public class GameControllerImpl implements GameController{
+public class GameControllerImpl implements GameController {
 		
+	//Initialize cells value to Pulsar pattern
 	public void initializeCells(Cell cell) {
 	
 		cell.addCell(3, 1);
@@ -68,71 +69,85 @@ public class GameControllerImpl implements GameController{
 		cell.addCell(11, 13);
 	}
 	
-	public void updateCells(GameBoard gameBoard, Cell cell) {
-		boolean[][] cells = new boolean[gameBoard.getWidth()]
-				[gameBoard.getHight()];
-		
-		boolean[][] tempCells = new boolean[gameBoard.getWidth()]
-                [gameBoard.getHight()];
-		
-		cells = cell.getCells();
-		int aliveNeighbours;
-		
-		for(int i = 0; i < gameBoard.getWidth(); i++) {
-			for(int j = 0; j < gameBoard.getHight(); j++) {
-				aliveNeighbours = calculateAliveNeighbours(cells, gameBoard.getWidth(), 
-						gameBoard.getHight(), i,j);
-				if(!cells[i][j]) {
-					if(aliveNeighbours == 3)
-						tempCells[i][j] = true; 
-					else
-						tempCells[i][j] = false; 
-				} else {
-					if((aliveNeighbours < 2) || (aliveNeighbours > 3))
-						tempCells[i][j] = false; 
-					else 
-						tempCells[i][j] = true; 
-				}
-			}
-		}
-		
-		cell.setCells(tempCells);
+	//Find the first neighbor of current cell in X or Y axis
+	public int findFirstNeighbor(int currentPosition) {
+		if(currentPosition > 0)
+			return currentPosition - 1;
+		else  //current cell is located at zero and the first neighbor is in same axis
+			return currentPosition;
 	}
 	
-	public int calculateAliveNeighbours(boolean[][] cells, int width, int hight, int column, int row) {
+	//Find the last neighbor of current cell in X or Y axis
+	public int findLastNeighbor(int currentPosition, int lastPosition) {
+		if(currentPosition < lastPosition -1)
+			return currentPosition + 1;
+		else  //current cell is located at last position and the last neighbor is 
+			  //in same axis
+			return currentPosition;
+	}
+	
+	//Calculate number of alive neighbors 
+	public int calculateAliveNeighbors(boolean[][] cells, int width, int hight, int column, int row) {
 		
 		int startX, startY;
 		int endX, endY;
 		int aliveNeighbours = 0;
 		
-		if(column > 0)
-			startX = column - 1;
-		else 
-			startX = column + 1;
+		//First neighbor
+		startX = findFirstNeighbor(column);
+		startY = findFirstNeighbor(row);
 		
-		if(column < width - 1)
-			endX = column + 1;
-		else
-			endX = column - 1;
-		
-		if(row > 0)
-			startY = row - 1;
-		else 
-			startY = row + 1;
-		
-		if(row < hight - 1)
-			endY = row + 1;
-		else
-			endY = row - 1;
+		//Last neighbor
+		endX = findLastNeighbor(column, width);
+		endY = findLastNeighbor(row, hight);
 		
 		for(int i = startX; i <= endX; i++) {
 			for(int j = startY; j <= endY; j++) {
+				//if this cell is not the cell itself and is alive 
 				if(((i != column) || (j != row)) && (cells[i][j] == true))
 					aliveNeighbours++;
 			}
 		}
 
 		return aliveNeighbours;
+	}
+	
+	//Check if the cell would be alive in next generation
+	public boolean cellIsAlive(boolean cellValue, int aliveNeighbours) {
+		if(!cellValue) { 			 //if cell is dead
+			if(aliveNeighbours == 3) //and have 3 alive neighbors
+				return true; 		 //would be alive in next generation
+			else
+				return false; 		 //other wise would be dead
+		} else {					 //if cell is alive and have 2 or 3 alive neighbors would
+									 //be alive in next generation other wise would die
+			if((aliveNeighbours < 2) || (aliveNeighbours > 3))
+				return false; 
+			else 
+				return true; 
+		}
+	}
+	
+	//create next generation
+	public void updateCells(GameBoard gameBoard, Cell cell) {
+		boolean[][] cells = new boolean[gameBoard.getWidth()]
+				[gameBoard.getHight()];
+		
+		boolean[][] tempCells = new boolean[gameBoard.getWidth()] 
+                [gameBoard.getHight()];
+		
+		cells = cell.getCells();
+		int aliveNeighbours;
+		for(int i = 0; i < gameBoard.getWidth(); i++) {
+			for(int j = 0; j < gameBoard.getHight(); j++) {
+				//Calculate number of alive neighbors
+				aliveNeighbours = calculateAliveNeighbors(cells,gameBoard.getWidth(),gameBoard.getHight(), i,j);
+				//set new status of cell
+				tempCells[i][j] = cellIsAlive(cells[i][j],aliveNeighbours);
+			}
+		}	
+		//copy updated cell pattern to shared array to be used in view
+		cell.setCells(tempCells);
 	}
 
 }
