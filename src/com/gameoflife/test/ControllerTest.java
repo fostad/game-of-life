@@ -233,6 +233,7 @@ public class ControllerTest {
 
 		//TODO test with different initial values
 		//TODO test corners
+		//TODO test with small board size
 	}
 	
 	@AfterClass
