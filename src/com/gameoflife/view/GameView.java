@@ -41,6 +41,7 @@ public class GameView extends JPanel {
 		mainPanel.add(controlPanel);
 		if(gameBoard.getBoardName() != null)
 			mainFrame.setTitle(gameBoard.getBoardName());
+		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainFrame.setContentPane(mainPanel);
 		mainFrame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		mainFrame.pack();
